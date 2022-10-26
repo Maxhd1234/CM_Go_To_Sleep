@@ -7,8 +7,8 @@
     <ProjectGuid>{D8CD0BF5-7FDD-4CC3-8C74-04ED2B7FAA58}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CM_Go_To_Sleep</RootNamespace>
-    <AssemblyName>CM_Go_To_Sleep</AssemblyName>
+    <RootNamespace>KB_Go_To_Sleep</RootNamespace>
+    <AssemblyName>KB_Go_To_Sleep</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

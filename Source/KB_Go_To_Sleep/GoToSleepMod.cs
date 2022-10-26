@@ -2,7 +2,7 @@
 using RimWorld;
 using Verse;
 
-namespace CM_Go_To_Sleep
+namespace KB_Go_To_Sleep
 {
     public class GoToSleepMod : Mod
     {

@@ -8,7 +8,7 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace CM_Go_To_Sleep
+namespace KB_Go_To_Sleep
 {
     [StaticConstructorOnStartup]
     public static class FloatMenuMakerMap_Patches

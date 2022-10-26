@@ -9,8 +9,8 @@ ExportedObj/
 *.pidb
 *.booproj
 *.svd
-Source/CM_Go_To_Sleep/.idea/
-Source/CM_Go_To_Sleep/.vs/
-Source/CM_Go_To_Sleep/bin/
-Source/CM_Go_To_Sleep/obj/
-Source/CM_Go_To_Sleep/packages/
+Source/KB_Go_To_Sleep/.idea/
+Source/KB_Go_To_Sleep/.vs/
+Source/KB_Go_To_Sleep/bin/
+Source/KB_Go_To_Sleep/obj/
+Source/KB_Go_To_Sleep/packages/

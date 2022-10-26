@@ -6,6 +6,7 @@ using HarmonyLib;
 using RimWorld;
 using Verse;
 using Verse.AI;
+using Verse.AI.Group;
 
 namespace CM_Go_To_Sleep
 {
@@ -24,7 +25,7 @@ namespace CM_Go_To_Sleep
 
                 foreach (LocalTargetInfo bed in GenUI.TargetsAt(clickPos, ForSleeping(pawn), thingsOnly: true))
                 {
-                    if (pawn.needs.rest.CurLevel > RestUtility.FallAsleepMaxLevel(pawn))
+                    if (pawn.needs.rest.CurLevel > FloatMenuMakerMap_AddHumanlikeOrders.FallAsleepMaxLevel(pawn))
                     {
                         opts.Add(new FloatMenuOption("CM_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "CM_Go_To_Sleep_Not_Tired".Translate().CapitalizeFirst(), null));
                     }
@@ -43,6 +44,23 @@ namespace CM_Go_To_Sleep
                     }
                 }
             }
+
+            private static float WakeThreshold(Pawn p)
+            {
+                Lord lord = p.GetLord();
+                if (lord != null && lord.CurLordToil != null && lord.CurLordToil.CustomWakeThreshold.HasValue)
+                {
+                    return lord.CurLordToil.CustomWakeThreshold.Value;
+                }
+                return p.ageTracker.CurLifeStage?.naturalWakeThresholdOverride ?? 1f;
+            }
+
+
+            private static float FallAsleepMaxLevel(Pawn p)
+            {
+                return Mathf.Min(p.ageTracker.CurLifeStage?.fallAsleepMaxThresholdOverride ?? 0.75f, WakeThreshold(p) - 0.01f);
+            }
+
 
             private static TargetingParameters ForSleeping(Pawn sleeper)
             {

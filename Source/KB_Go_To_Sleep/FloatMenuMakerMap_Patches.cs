@@ -27,15 +27,15 @@ namespace KB_Go_To_Sleep
                 {
                     if (pawn.needs.rest.CurLevel > FloatMenuMakerMap_AddHumanlikeOrders.FallAsleepMaxLevel(pawn))
                     {
-                        opts.Add(new FloatMenuOption("CM_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "CM_Go_To_Sleep_Not_Tired".Translate().CapitalizeFirst(), null));
+                        opts.Add(new FloatMenuOption("KB_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "KB_Go_To_Sleep_Not_Tired".Translate().CapitalizeFirst(), null));
                     }
                     else if (!pawn.CanReach(bed, PathEndMode.OnCell, Danger.Deadly))
                     {
-                        opts.Add(new FloatMenuOption("CM_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "NoPath".Translate().CapitalizeFirst(), null));
+                        opts.Add(new FloatMenuOption("KB_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "NoPath".Translate().CapitalizeFirst(), null));
                     }
                     else
                     {
-                        opts.Add(FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("CM_Go_To_Sleep_GoToSleep".Translate(), delegate
+                        opts.Add(FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("KB_Go_To_Sleep_GoToSleep".Translate(), delegate
                         {
                             Job job = JobMaker.MakeJob(JobDefOf.LayDown, bed.Thing);
 

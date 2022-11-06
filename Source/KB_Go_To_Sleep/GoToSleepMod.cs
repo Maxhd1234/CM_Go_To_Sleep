@@ -11,7 +11,7 @@ namespace KB_Go_To_Sleep
 
         public GoToSleepMod(ModContentPack content) : base(content)
         {
-            var harmony = new Harmony("CM_Go_To_Sleep");
+            var harmony = new Harmony("KB_Go_To_Sleep");
             harmony.PatchAll();
 
             _instance = this;

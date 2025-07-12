@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using RimWorld;
-using Verse;
+﻿using Verse;
 
 namespace KB_Go_To_Sleep
 {
@@ -11,9 +9,6 @@ namespace KB_Go_To_Sleep
 
         public GoToSleepMod(ModContentPack content) : base(content)
         {
-            var harmony = new Harmony("KB_Go_To_Sleep");
-            harmony.PatchAll();
-
             _instance = this;
         }
     }

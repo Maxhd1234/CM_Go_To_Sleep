@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-using UnityEngine;
-using HarmonyLib;
+﻿using UnityEngine;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -11,80 +7,98 @@ using Verse.AI.Group;
 namespace KB_Go_To_Sleep
 {
     [StaticConstructorOnStartup]
-    public static class FloatMenuMakerMap_Patches
+    public class FloatMenuOptionProvider_Sleep : FloatMenuOptionProvider
     {
-        [HarmonyPatch(typeof(FloatMenuMakerMap))]
-        [HarmonyPatch("AddHumanlikeOrders", MethodType.Normal)]
-        public static class FloatMenuMakerMap_AddHumanlikeOrders
+        protected override bool Drafted => true;
+
+        protected override bool Undrafted => true;
+
+        protected override bool Multiselect => false;
+
+        protected override FloatMenuOption GetSingleOptionFor(Thing thing, FloatMenuContext context)
         {
-            [HarmonyPostfix]
-            public static void Postfix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
+            Pawn pawn = context.FirstSelectedPawn;
+            if (pawn.needs == null || pawn.needs.rest == null)
             {
-                if (pawn.needs == null || pawn.needs.rest == null)
-                    return;
+                return null;
+            }
 
-                foreach (LocalTargetInfo bed in GenUI.TargetsAt(clickPos, ForSleeping(pawn), thingsOnly: true))
+            foreach (LocalTargetInfo bed in GenUI.TargetsAt(thing.DrawPos, ForSleeping(pawn), thingsOnly: true))
+            {
+                if (pawn.needs.rest.CurLevel > FallAsleepMaxLevel(pawn))
                 {
-                    if (pawn.needs.rest.CurLevel > FloatMenuMakerMap_AddHumanlikeOrders.FallAsleepMaxLevel(pawn))
-                    {
-                        opts.Add(new FloatMenuOption("KB_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "KB_Go_To_Sleep_Not_Tired".Translate().CapitalizeFirst(), null));
-                    }
-                    else if (!pawn.CanReach(bed, PathEndMode.OnCell, Danger.Deadly))
-                    {
-                        opts.Add(new FloatMenuOption("KB_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "NoPath".Translate().CapitalizeFirst(), null));
-                    }
-                    else
-                    {
-                        opts.Add(FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("KB_Go_To_Sleep_GoToSleep".Translate(), delegate
-                        {
-                            Job job = JobMaker.MakeJob(JobDefOf.LayDown, bed.Thing);
-
-                            pawn.jobs.TryTakeOrderedJob(job);
-                        }, MenuOptionPriority.High), pawn, bed.Thing));
-                    }
+                    return new FloatMenuOption(
+                        "KB_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "KB_Go_To_Sleep_Not_Tired".Translate().CapitalizeFirst(),
+                        null
+                    );
+                }
+                else if (!pawn.CanReach(bed, PathEndMode.OnCell, Danger.Deadly))
+                {
+                    return new FloatMenuOption(
+                        "KB_Go_To_Sleep_Cannot_Sleep".Translate() + ": " + "NoPath".Translate().CapitalizeFirst(),
+                        null
+                    );
+                }
+                else
+                {
+                    return FloatMenuUtility.DecoratePrioritizedTask(
+                        new FloatMenuOption(
+                            "KB_Go_To_Sleep_GoToSleep".Translate(),
+                            delegate
+                            {
+                                Job job = JobMaker.MakeJob(JobDefOf.LayDown, bed.Thing);
+                                pawn.jobs.TryTakeOrderedJob(job);
+                            },
+                            MenuOptionPriority.High
+                        ),
+                        pawn,
+                        bed.Thing
+                    );
                 }
             }
+            return null;
+        }
 
-            private static float WakeThreshold(Pawn p)
+
+        private static float WakeThreshold(Pawn p)
+        {
+            Lord lord = p.GetLord();
+            if (lord != null && lord.CurLordToil != null && lord.CurLordToil.CustomWakeThreshold.HasValue)
             {
-                Lord lord = p.GetLord();
-                if (lord != null && lord.CurLordToil != null && lord.CurLordToil.CustomWakeThreshold.HasValue)
-                {
-                    return lord.CurLordToil.CustomWakeThreshold.Value;
-                }
-                return p.ageTracker.CurLifeStage?.naturalWakeThresholdOverride ?? 1f;
+                return lord.CurLordToil.CustomWakeThreshold.Value;
             }
+            return p.ageTracker.CurLifeStage?.naturalWakeThresholdOverride ?? 1f;
+        }
 
 
-            private static float FallAsleepMaxLevel(Pawn p)
+        private static float FallAsleepMaxLevel(Pawn p)
+        {
+            return Mathf.Min(p.ageTracker.CurLifeStage?.fallAsleepMaxThresholdOverride ?? 0.75f, WakeThreshold(p) - 0.01f);
+        }
+
+
+        private static TargetingParameters ForSleeping(Pawn sleeper)
+        {
+            return new TargetingParameters
             {
-                return Mathf.Min(p.ageTracker.CurLifeStage?.fallAsleepMaxThresholdOverride ?? 0.75f, WakeThreshold(p) - 0.01f);
-            }
-
-
-            private static TargetingParameters ForSleeping(Pawn sleeper)
-            {
-                return new TargetingParameters
+                canTargetPawns = false,
+                canTargetBuildings = true,
+                mapObjectTargetsMustBeAutoAttackable = false,
+                validator = delegate (TargetInfo targ)
                 {
-                    canTargetPawns = false,
-                    canTargetBuildings = true,
-                    mapObjectTargetsMustBeAutoAttackable = false,
-                    validator = delegate (TargetInfo targ)
+                    if (!targ.HasThing)
                     {
-                        if (!targ.HasThing)
-                        {
-                            return false;
-                        }
-                        Building_Bed bed = targ.Thing as Building_Bed;
-                        if (bed == null)
-                        {
-                            return false;
-                        }
-                        return (!bed.ForPrisoners && !bed.Medical);
-                        //return (bed.AnyUnownedSleepingSlot || bed.CompAssignableToPawn.AssignedPawns.Contains(sleeper));
+                        return false;
                     }
-                };
-            }
+                    Building_Bed bed = targ.Thing as Building_Bed;
+                    if (bed == null)
+                    {
+                        return false;
+                    }
+                    return (!bed.ForPrisoners && !bed.Medical);
+                    //return (bed.AnyUnownedSleepingSlot || bed.CompAssignableToPawn.AssignedPawns.Contains(sleeper));
+                }
+            };
         }
     }
 }

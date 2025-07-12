@@ -1,3 +1,10 @@
+## [1.0.6] - 2025-07-12
+
+### Added
+- Support for RimWorld version 1.6
+- German translation by Maxhd1234
+
+
 ## [1.0.5] - 2024-04-11
 
 ### Added

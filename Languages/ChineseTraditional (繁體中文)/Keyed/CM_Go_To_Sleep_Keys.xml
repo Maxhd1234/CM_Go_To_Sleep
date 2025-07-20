@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- EN: Cannot sleep -->
+  <CM_Go_To_Sleep_Cannot_Sleep>還不想睡覺</CM_Go_To_Sleep_Cannot_Sleep>
+  <!-- EN: not tired enough -->
+  <CM_Go_To_Sleep_Not_Tired>還不夠疲憊(75%以上)</CM_Go_To_Sleep_Not_Tired>
+  <!-- EN: Go to sleep -->
+  <CM_Go_To_Sleep_GoToSleep>強制睡覺</CM_Go_To_Sleep_GoToSleep>
+</LanguageData>

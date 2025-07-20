@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <!-- EN: Cannot sleep -->
+  <KB_Go_To_Sleep_Cannot_Sleep>还不想睡觉</KB_Go_To_Sleep_Cannot_Sleep>
+  <!-- EN: not tired enough -->
+  <KB_Go_To_Sleep_Not_Tired>还不够疲惫(75%以上)</KB_Go_To_Sleep_Not_Tired>
+  <!-- EN: Go to sleep -->
+  <KB_Go_To_Sleep_GoToSleep>强制睡觉</KB_Go_To_Sleep_GoToSleep>
+</LanguageData>
